@@ -152,22 +152,10 @@ export function Contact() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.15 }}
             onSubmit={handleSubmit}
-            action="https://formsubmit.co/builtbylyka@gmail.com"
-            method="POST"
+            noValidate
             className="glass shadow-glow rounded-[2rem] p-7 md:p-9 border border-primary/15"
           >
-            <input type="hidden" name="_captcha" value="false" />
-            <input type="hidden" name="_subject" value="New Website Inquiry" />
-            <input type="hidden" name="_template" value="table" />
-            <input
-              type="hidden"
-              name="_next"
-              value={
-                typeof window !== "undefined"
-                  ? `${window.location.origin}/?sent=1#contact`
-                  : "/?sent=1#contact"
-              }
-            />
+
 
 
             <h3 className="font-display text-2xl">Send an inquiry</h3>
