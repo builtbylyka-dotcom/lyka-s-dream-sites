@@ -46,6 +46,7 @@ function Index() {
         <Contact />
       </main>
       <Footer />
+      <FloatingMessenger />
     </div>
   );
 }
