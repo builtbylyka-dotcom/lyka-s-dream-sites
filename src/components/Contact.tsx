@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Facebook, Loader2, Mail, MessageCircle, Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Sparkle } from "./Sparkle";
@@ -35,52 +35,65 @@ type Status = "idle" | "loading" | "success" | "error";
 export function Contact() {
   const [status, setStatus] = useState<Status>("idle");
 
-  // Detect successful return from FormSubmit (real email sent)
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("sent") === "1") {
-      setStatus("success");
-      toast.success("Your inquiry has been sent successfully! ✨");
-      // Clean the URL without reloading
-      const url = window.location.pathname + "#contact";
-      window.history.replaceState({}, "", url);
-    }
-  }, []);
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     const form = e.currentTarget;
     const fd = new FormData(form);
 
     // Honeypot spam protection
-    if ((fd.get("_honey") as string)?.length) {
-      e.preventDefault();
-      return;
-    }
+    if ((fd.get("_honey") as string)?.length) return;
 
     const name = String(fd.get("name") ?? "").trim();
     const email = String(fd.get("email") ?? "").trim();
     const message = String(fd.get("message") ?? "").trim();
+    const projectType = String(fd.get("type") ?? "").trim();
 
     if (name.length < 2 || name.length > 100) {
-      e.preventDefault();
       toast.error("Please enter a valid name.");
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255) {
-      e.preventDefault();
       toast.error("Please enter a valid email.");
       return;
     }
     if (message.length < 5 || message.length > 2000) {
-      e.preventDefault();
       toast.error("Message must be between 5 and 2000 characters.");
       return;
     }
 
-    // Allow native top-level POST → FormSubmit will email + redirect back via _next.
     setStatus("loading");
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/builtbylyka@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+          project_type: projectType,
+          _subject: "New Website Inquiry",
+          _template: "table",
+          _captcha: "false",
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}) as Record<string, unknown>);
+      if (!res.ok || (data && (data as { success?: string }).success === "false")) {
+        throw new Error("FormSubmit error");
+      }
+
+      setStatus("success");
+      toast.success("Your inquiry has been sent successfully! ✨");
+      form.reset();
+    } catch {
+      setStatus("error");
+      toast.error("Something went wrong. Please email me directly.");
+    }
   }
+
 
   return (
     <section id="contact" className="relative py-24 md:py-32 overflow-hidden">
@@ -139,22 +152,10 @@ export function Contact() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.15 }}
             onSubmit={handleSubmit}
-            action="https://formsubmit.co/builtbylyka@gmail.com"
-            method="POST"
+            noValidate
             className="glass shadow-glow rounded-[2rem] p-7 md:p-9 border border-primary/15"
           >
-            <input type="hidden" name="_captcha" value="false" />
-            <input type="hidden" name="_subject" value="New Website Inquiry" />
-            <input type="hidden" name="_template" value="table" />
-            <input
-              type="hidden"
-              name="_next"
-              value={
-                typeof window !== "undefined"
-                  ? `${window.location.origin}/?sent=1#contact`
-                  : "/?sent=1#contact"
-              }
-            />
+
 
 
             <h3 className="font-display text-2xl">Send an inquiry</h3>
