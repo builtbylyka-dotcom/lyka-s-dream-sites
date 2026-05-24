@@ -38,8 +38,14 @@ export function Services() {
           </h2>
           <p className="mt-4 text-muted-foreground text-balance">
             Pick a package below. Each one is fully responsive, beginner-friendly, and yours
-            to keep forever. Starting at <span className="font-medium text-foreground">₱1,000</span>.
+            to keep forever.
           </p>
+          <div className="mt-6 inline-flex items-center gap-2.5 rounded-full glass shadow-soft px-4 py-2 border border-primary/15">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-xs uppercase tracking-[0.18em] text-mauve font-medium">
+              Custom quotes · <span className="text-primary">Starting at ₱1,000</span>
+            </span>
+          </div>
         </div>
 
         <div className="mt-14 grid sm:grid-cols-2 gap-5">
@@ -62,10 +68,7 @@ export function Services() {
               </div>
               <h3 className="font-display text-2xl">{s.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-              <div className="mt-6 flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">
-                  Starting at <span className="font-medium text-foreground">₱1,000</span>
-                </span>
+              <div className="mt-6 flex items-center justify-end">
                 <a
                   href="#contact"
                   className="text-xs font-medium text-primary inline-flex items-center gap-1 hover:gap-2 transition-all"

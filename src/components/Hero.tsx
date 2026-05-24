@@ -61,7 +61,7 @@ export function Hero() {
             </a>
             <a
               href="#services"
-              className="inline-flex items-center gap-2 rounded-full glass shadow-soft px-6 py-3.5 text-sm font-medium hover:bg-white transition-colors"
+              className="inline-flex items-center gap-2 rounded-full glass shadow-soft px-6 py-3.5 text-sm font-medium hover:bg-card hover:shadow-glow transition-all"
             >
               View services
             </a>

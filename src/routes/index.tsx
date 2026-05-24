@@ -9,6 +9,7 @@ import { Portfolio } from "@/components/Portfolio";
 import { Testimonials } from "@/components/Testimonials";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
+import { FloatingMessenger } from "@/components/FloatingMessenger";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -45,6 +46,7 @@ function Index() {
         <Contact />
       </main>
       <Footer />
+      <FloatingMessenger />
     </div>
   );
 }

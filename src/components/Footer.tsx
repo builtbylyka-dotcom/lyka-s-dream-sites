@@ -1,4 +1,7 @@
 import chibi from "@/assets/lyka-logo.png";
+import { Facebook, Mail, MessageCircle } from "lucide-react";
+
+const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61590488216046";
 
 export function Footer() {
   return (
@@ -19,17 +22,33 @@ export function Footer() {
           </p>
         </div>
 
-        <div className="flex items-center gap-5 text-xs">
-          <a href="mailto:builtbylyka@gmail.com" className="hover:text-primary transition-colors">
-            Email
+        <div className="flex items-center gap-2 text-xs">
+          <a
+            href="mailto:builtbylyka@gmail.com"
+            aria-label="Email"
+            className="h-9 w-9 rounded-full glass shadow-soft flex items-center justify-center hover:shadow-glow hover:text-primary transition-all"
+          >
+            <Mail className="h-4 w-4" />
           </a>
-          <a href="https://wa.me/639518235203" className="hover:text-primary transition-colors">
-            WhatsApp
+          <a
+            href="https://wa.me/639518235203"
+            aria-label="WhatsApp"
+            target="_blank"
+            rel="noreferrer"
+            className="h-9 w-9 rounded-full glass shadow-soft flex items-center justify-center hover:shadow-glow hover:text-primary transition-all"
+          >
+            <MessageCircle className="h-4 w-4" />
           </a>
-          <a href="https://m.me/builtbylyka" className="hover:text-primary transition-colors">
-            Messenger
+          <a
+            href={FACEBOOK_URL}
+            aria-label="Facebook"
+            target="_blank"
+            rel="noreferrer"
+            className="h-9 w-9 rounded-full glass shadow-soft flex items-center justify-center hover:shadow-glow hover:text-primary transition-all"
+          >
+            <Facebook className="h-4 w-4" />
           </a>
-          <span>© {new Date().getFullYear()}</span>
+          <span className="ml-3">© {new Date().getFullYear()}</span>
         </div>
       </div>
     </footer>

@@ -26,7 +26,7 @@ export function WhyMe() {
               I'm a one-woman studio. That means fewer middlemen, more love poured into every
               pixel — and pricing that respects your budget.
             </p>
-            <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-white shadow-soft px-4 py-2 text-xs">
+            <div className="mt-8 inline-flex items-center gap-2 rounded-full glass shadow-soft px-4 py-2 text-xs">
               <span className="h-2 w-2 rounded-full bg-primary" />
               Built with care · One project at a time
             </div>
@@ -40,7 +40,7 @@ export function WhyMe() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.45, delay: i * 0.06 }}
-                className="rounded-2xl bg-white/80 backdrop-blur border border-border/60 p-5 hover:bg-white hover:shadow-soft transition-all"
+                className="rounded-2xl bg-card/80 backdrop-blur border border-border/60 p-5 hover:bg-card hover:shadow-soft transition-all"
               >
                 <div className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center">
                   <item.icon className="h-4.5 w-4.5 text-primary" />
