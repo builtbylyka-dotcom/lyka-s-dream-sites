@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import chibi from "@/assets/lyka-logo.png";
+import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
   { label: "Services", href: "#services" },
