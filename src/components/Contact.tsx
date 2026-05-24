@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Facebook, Loader2, Mail, MessageCircle, Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Sparkle } from "./Sparkle";
@@ -34,55 +34,49 @@ type Status = "idle" | "loading" | "success" | "error";
 
 export function Contact() {
   const [status, setStatus] = useState<Status>("idle");
+  const formRef = useRef<HTMLFormElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     const form = e.currentTarget;
     const fd = new FormData(form);
 
     // Honeypot spam protection
-    if ((fd.get("_honey") as string)?.length) return;
+    if ((fd.get("_honey") as string)?.length) {
+      e.preventDefault();
+      return;
+    }
 
     const name = String(fd.get("name") ?? "").trim();
     const email = String(fd.get("email") ?? "").trim();
     const message = String(fd.get("message") ?? "").trim();
 
     if (name.length < 2 || name.length > 100) {
+      e.preventDefault();
       toast.error("Please enter a valid name.");
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255) {
+      e.preventDefault();
       toast.error("Please enter a valid email.");
       return;
     }
     if (message.length < 5 || message.length > 2000) {
+      e.preventDefault();
       toast.error("Message must be between 5 and 2000 characters.");
       return;
     }
 
+    // Let the native form POST proceed into the hidden iframe.
     setStatus("loading");
-    try {
-      const res = await fetch("https://formsubmit.co/ajax/builtbylyka@gmail.com", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          project_type: fd.get("type"),
-          message,
-          _subject: `New inquiry from ${name} ✨`,
-          _template: "table",
-          _captcha: "false",
-        }),
-      });
-      if (!res.ok) throw new Error("Network");
-      setStatus("success");
-      toast.success("Inquiry sent! I'll reply within 24h ✨");
-      form.reset();
-    } catch {
-      setStatus("error");
-      toast.error("Something went wrong. Try again or email me directly.");
-    }
+  }
+
+  function handleIframeLoad() {
+    // First load fires on mount with about:blank — ignore.
+    if (status !== "loading") return;
+    setStatus("success");
+    toast.success("Your inquiry has been sent successfully! ✨");
+    formRef.current?.reset();
   }
 
   return (
@@ -137,13 +131,28 @@ export function Contact() {
           </div>
 
           <motion.form
+            ref={formRef}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.15 }}
             onSubmit={handleSubmit}
+            action="https://formsubmit.co/builtbylyka@gmail.com"
+            method="POST"
+            target="lyka-formsubmit"
             className="glass shadow-glow rounded-[2rem] p-7 md:p-9 border border-primary/15"
           >
+            <input type="hidden" name="_subject" value="New inquiry from Built by Lyka ✨" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_captcha" value="false" />
+            <iframe
+              ref={iframeRef}
+              name="lyka-formsubmit"
+              title="formsubmit"
+              onLoad={handleIframeLoad}
+              className="hidden"
+            />
+
             <h3 className="font-display text-2xl">Send an inquiry</h3>
             <p className="mt-1 text-sm text-muted-foreground">
               Tell me a little about your project. I usually reply within 24h.
