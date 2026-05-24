@@ -39,6 +39,7 @@ type Status = "idle" | "loading" | "success" | "error";
 
 export function Contact() {
   const [status, setStatus] = useState<Status>("idle");
+  const formRef = useRef<HTMLFormElement>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -51,7 +52,6 @@ export function Contact() {
     const name = String(fd.get("name") ?? "").trim();
     const email = String(fd.get("email") ?? "").trim();
     const message = String(fd.get("message") ?? "").trim();
-    const projectType = String(fd.get("type") ?? "").trim();
 
     if (name.length < 2 || name.length > 100) {
       toast.error("Please enter a valid name.");
@@ -66,36 +66,26 @@ export function Contact() {
       return;
     }
 
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+      toast.error("Email service is not configured yet.");
+      return;
+    }
+
     setStatus("loading");
     try {
-      const res = await fetch("https://formsubmit.co/ajax/builtbylyka@gmail.com", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          message,
-          project_type: projectType,
-          _subject: "New Website Inquiry",
-          _template: "table",
-          _captcha: "false",
-        }),
-      });
-
-      const data = await res.json().catch(() => ({}) as Record<string, unknown>);
-      if (!res.ok || (data && (data as { success?: string }).success === "false")) {
-        throw new Error("FormSubmit error");
-      }
+      await emailjs.sendForm(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        form,
+        { publicKey: EMAILJS_PUBLIC_KEY },
+      );
 
       setStatus("success");
       toast.success("Your inquiry has been sent successfully! ✨");
       form.reset();
     } catch {
       setStatus("error");
-      toast.error("Something went wrong. Please email me directly.");
+      toast.error("Something went wrong. Please try again.");
     }
   }
 
