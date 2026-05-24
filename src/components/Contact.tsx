@@ -134,7 +134,6 @@ export function Contact() {
           </div>
 
           <motion.form
-            ref={formRef}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -142,19 +141,21 @@ export function Contact() {
             onSubmit={handleSubmit}
             action="https://formsubmit.co/builtbylyka@gmail.com"
             method="POST"
-            target="lyka-formsubmit"
             className="glass shadow-glow rounded-[2rem] p-7 md:p-9 border border-primary/15"
           >
-            <input type="hidden" name="_subject" value="New inquiry from Built by Lyka ✨" />
-            <input type="hidden" name="_template" value="table" />
             <input type="hidden" name="_captcha" value="false" />
-            <iframe
-              ref={iframeRef}
-              name="lyka-formsubmit"
-              title="formsubmit"
-              onLoad={handleIframeLoad}
-              className="hidden"
+            <input type="hidden" name="_subject" value="New Website Inquiry" />
+            <input type="hidden" name="_template" value="table" />
+            <input
+              type="hidden"
+              name="_next"
+              value={
+                typeof window !== "undefined"
+                  ? `${window.location.origin}/?sent=1#contact`
+                  : "/?sent=1#contact"
+              }
             />
+
 
             <h3 className="font-display text-2xl">Send an inquiry</h3>
             <p className="mt-1 text-sm text-muted-foreground">
