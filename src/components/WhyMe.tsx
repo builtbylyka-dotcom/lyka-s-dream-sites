@@ -26,7 +26,7 @@ export function WhyMe() {
               I'm a one-woman studio. That means fewer middlemen, more love poured into every
               pixel — and pricing that respects your budget.
             </p>
-            <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-white shadow-soft px-4 py-2 text-xs">
+            <div className="mt-8 inline-flex items-center gap-2 rounded-full glass shadow-soft px-4 py-2 text-xs">
               <span className="h-2 w-2 rounded-full bg-primary" />
               Built with care · One project at a time
             </div>
