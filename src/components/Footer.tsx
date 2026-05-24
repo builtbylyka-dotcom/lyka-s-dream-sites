@@ -1,4 +1,4 @@
-import chibi from "@/assets/lyka-chibi.png";
+import chibi from "@/assets/lyka-logo.png";
 
 export function Footer() {
   return (
