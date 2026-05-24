@@ -40,7 +40,7 @@ export function WhyMe() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.45, delay: i * 0.06 }}
-                className="rounded-2xl bg-white/80 backdrop-blur border border-border/60 p-5 hover:bg-white hover:shadow-soft transition-all"
+                className="rounded-2xl bg-card/80 backdrop-blur border border-border/60 p-5 hover:bg-card hover:shadow-soft transition-all"
               >
                 <div className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center">
                   <item.icon className="h-4.5 w-4.5 text-primary" />
