@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import chibi from "@/assets/lyka-chibi.png";
+import chibi from "@/assets/lyka-logo.png";
 
 const links = [
   { label: "Services", href: "#services" },
