@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Facebook, Mail, MessageCircle, Send, Sparkles } from "lucide-react";
+import { Facebook, Loader2, Mail, MessageCircle, Send, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 import { Sparkle } from "./Sparkle";
+
+const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61590488216046";
 
 const channels = [
   {
@@ -20,15 +23,67 @@ const channels = [
   },
   {
     icon: Facebook,
-    label: "Messenger",
+    label: "Facebook",
     value: "Built by Lyka",
-    href: "https://m.me/builtbylyka",
-    hint: "Chat on Facebook",
+    href: FACEBOOK_URL,
+    hint: "Message me on Facebook",
   },
 ];
 
+type Status = "idle" | "loading" | "success" | "error";
+
 export function Contact() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+
+    // Honeypot spam protection
+    if ((fd.get("_honey") as string)?.length) return;
+
+    const name = String(fd.get("name") ?? "").trim();
+    const email = String(fd.get("email") ?? "").trim();
+    const message = String(fd.get("message") ?? "").trim();
+
+    if (name.length < 2 || name.length > 100) {
+      toast.error("Please enter a valid name.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255) {
+      toast.error("Please enter a valid email.");
+      return;
+    }
+    if (message.length < 5 || message.length > 2000) {
+      toast.error("Message must be between 5 and 2000 characters.");
+      return;
+    }
+
+    setStatus("loading");
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/builtbylyka@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          project_type: fd.get("type"),
+          message,
+          _subject: `New inquiry from ${name} ✨`,
+          _template: "table",
+          _captcha: "false",
+        }),
+      });
+      if (!res.ok) throw new Error("Network");
+      setStatus("success");
+      toast.success("Inquiry sent! I'll reply within 24h ✨");
+      form.reset();
+    } catch {
+      setStatus("error");
+      toast.error("Something went wrong. Try again or email me directly.");
+    }
+  }
 
   return (
     <section id="contact" className="relative py-24 md:py-32 overflow-hidden">
@@ -53,7 +108,6 @@ export function Contact() {
         </div>
 
         <div className="mt-14 grid lg:grid-cols-[0.9fr_1.1fr] gap-6">
-          {/* Channels — floating glass cards */}
           <div className="flex flex-col gap-4">
             {channels.map((c, i) => (
               <motion.a
@@ -82,25 +136,12 @@ export function Contact() {
             ))}
           </div>
 
-          {/* Form */}
           <motion.form
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            onSubmit={(e) => {
-              e.preventDefault();
-              const form = e.currentTarget as HTMLFormElement;
-              const fd = new FormData(form);
-              const subject = encodeURIComponent(`New inquiry from ${fd.get("name") ?? ""}`);
-              const body = encodeURIComponent(
-                `Name: ${fd.get("name")}\nEmail: ${fd.get("email")}\nProject type: ${fd.get(
-                  "type",
-                )}\n\n${fd.get("message")}`,
-              );
-              window.location.href = `mailto:builtbylyka@gmail.com?subject=${subject}&body=${body}`;
-              setSent(true);
-            }}
+            onSubmit={handleSubmit}
             className="glass shadow-glow rounded-[2rem] p-7 md:p-9 border border-primary/15"
           >
             <h3 className="font-display text-2xl">Send an inquiry</h3>
@@ -108,15 +149,31 @@ export function Contact() {
               Tell me a little about your project. I usually reply within 24h.
             </p>
 
+            {/* Honeypot */}
+            <input
+              type="text"
+              name="_honey"
+              tabIndex={-1}
+              autoComplete="off"
+              className="hidden"
+              aria-hidden
+            />
+
             <div className="mt-6 grid sm:grid-cols-2 gap-4">
-              <Field name="name" label="Your name" placeholder="Lyka R." />
-              <Field name="email" label="Email" type="email" placeholder="you@email.com" />
+              <Field name="name" label="Your name" placeholder="Lyka R." maxLength={100} />
+              <Field
+                name="email"
+                label="Email"
+                type="email"
+                placeholder="you@email.com"
+                maxLength={255}
+              />
             </div>
             <div className="mt-4">
               <label className="text-xs font-medium text-mauve">Project type</label>
               <select
                 name="type"
-                className="mt-1.5 w-full rounded-2xl bg-white/70 border border-border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                className="mt-1.5 w-full rounded-2xl bg-card/70 border border-border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
                 defaultValue="Portfolio Website"
               >
                 <option>Portfolio Website</option>
@@ -131,22 +188,35 @@ export function Contact() {
               <textarea
                 name="message"
                 rows={4}
+                maxLength={2000}
                 placeholder="What's the vibe? Any references? Timeline?"
-                className="mt-1.5 w-full rounded-2xl bg-white/70 border border-border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
+                className="mt-1.5 w-full rounded-2xl bg-card/70 border border-border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="mt-6 group w-full inline-flex items-center justify-center gap-2 rounded-full bg-foreground text-background px-6 py-3.5 text-sm font-medium shadow-soft hover:shadow-glow transition-all"
+              disabled={status === "loading"}
+              className="mt-6 group w-full inline-flex items-center justify-center gap-2 rounded-full bg-foreground text-background px-6 py-3.5 text-sm font-medium shadow-soft hover:shadow-glow transition-all disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {sent ? "Opening your email…" : "Send inquiry"}
-              <Send className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              {status === "loading" ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Sending…
+                </>
+              ) : status === "success" ? (
+                <>Sent ✨ — talk soon!</>
+              ) : (
+                <>
+                  Send inquiry
+                  <Send className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </>
+              )}
             </button>
 
             <p className="mt-3 text-[11px] text-center text-muted-foreground">
-              By sending, you'll open your email client with the message pre-filled. Pinky promise — no spam.
+              Your message goes straight to builtbylyka@gmail.com. Pinky promise — no spam.
             </p>
           </motion.form>
         </div>
@@ -160,11 +230,13 @@ function Field({
   label,
   type = "text",
   placeholder,
+  maxLength,
 }: {
   name: string;
   label: string;
   type?: string;
   placeholder?: string;
+  maxLength?: number;
 }) {
   return (
     <div>
@@ -173,8 +245,9 @@ function Field({
         name={name}
         type={type}
         required
+        maxLength={maxLength}
         placeholder={placeholder}
-        className="mt-1.5 w-full rounded-2xl bg-white/70 border border-border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+        className="mt-1.5 w-full rounded-2xl bg-card/70 border border-border px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
       />
     </div>
   );
