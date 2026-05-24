@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Facebook, Loader2, Mail, MessageCircle, Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Sparkle } from "./Sparkle";
