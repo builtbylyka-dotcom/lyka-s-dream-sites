@@ -68,10 +68,7 @@ export function Services() {
               </div>
               <h3 className="font-display text-2xl">{s.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-              <div className="mt-6 flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">
-                  Starting at <span className="font-medium text-foreground">₱1,000</span>
-                </span>
+              <div className="mt-6 flex items-center justify-end">
                 <a
                   href="#contact"
                   className="text-xs font-medium text-primary inline-flex items-center gap-1 hover:gap-2 transition-all"
