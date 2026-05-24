@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Facebook, Loader2, Mail, MessageCircle, Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Sparkle } from "./Sparkle";
@@ -34,8 +34,19 @@ type Status = "idle" | "loading" | "success" | "error";
 
 export function Contact() {
   const [status, setStatus] = useState<Status>("idle");
-  const formRef = useRef<HTMLFormElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Detect successful return from FormSubmit (real email sent)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("sent") === "1") {
+      setStatus("success");
+      toast.success("Your inquiry has been sent successfully! ✨");
+      // Clean the URL without reloading
+      const url = window.location.pathname + "#contact";
+      window.history.replaceState({}, "", url);
+    }
+  }, []);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     const form = e.currentTarget;
@@ -67,16 +78,8 @@ export function Contact() {
       return;
     }
 
-    // Let the native form POST proceed into the hidden iframe.
+    // Allow native top-level POST → FormSubmit will email + redirect back via _next.
     setStatus("loading");
-  }
-
-  function handleIframeLoad() {
-    // First load fires on mount with about:blank — ignore.
-    if (status !== "loading") return;
-    setStatus("success");
-    toast.success("Your inquiry has been sent successfully! ✨");
-    formRef.current?.reset();
   }
 
   return (
@@ -131,7 +134,6 @@ export function Contact() {
           </div>
 
           <motion.form
-            ref={formRef}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -139,19 +141,21 @@ export function Contact() {
             onSubmit={handleSubmit}
             action="https://formsubmit.co/builtbylyka@gmail.com"
             method="POST"
-            target="lyka-formsubmit"
             className="glass shadow-glow rounded-[2rem] p-7 md:p-9 border border-primary/15"
           >
-            <input type="hidden" name="_subject" value="New inquiry from Built by Lyka ✨" />
-            <input type="hidden" name="_template" value="table" />
             <input type="hidden" name="_captcha" value="false" />
-            <iframe
-              ref={iframeRef}
-              name="lyka-formsubmit"
-              title="formsubmit"
-              onLoad={handleIframeLoad}
-              className="hidden"
+            <input type="hidden" name="_subject" value="New Website Inquiry" />
+            <input type="hidden" name="_template" value="table" />
+            <input
+              type="hidden"
+              name="_next"
+              value={
+                typeof window !== "undefined"
+                  ? `${window.location.origin}/?sent=1#contact`
+                  : "/?sent=1#contact"
+              }
             />
+
 
             <h3 className="font-display text-2xl">Send an inquiry</h3>
             <p className="mt-1 text-sm text-muted-foreground">
