@@ -34,8 +34,19 @@ type Status = "idle" | "loading" | "success" | "error";
 
 export function Contact() {
   const [status, setStatus] = useState<Status>("idle");
-  const formRef = useRef<HTMLFormElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Detect successful return from FormSubmit (real email sent)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("sent") === "1") {
+      setStatus("success");
+      toast.success("Your inquiry has been sent successfully! ✨");
+      // Clean the URL without reloading
+      const url = window.location.pathname + "#contact";
+      window.history.replaceState({}, "", url);
+    }
+  }, []);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     const form = e.currentTarget;
@@ -67,16 +78,8 @@ export function Contact() {
       return;
     }
 
-    // Let the native form POST proceed into the hidden iframe.
+    // Allow native top-level POST → FormSubmit will email + redirect back via _next.
     setStatus("loading");
-  }
-
-  function handleIframeLoad() {
-    // First load fires on mount with about:blank — ignore.
-    if (status !== "loading") return;
-    setStatus("success");
-    toast.success("Your inquiry has been sent successfully! ✨");
-    formRef.current?.reset();
   }
 
   return (
