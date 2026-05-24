@@ -62,25 +62,31 @@ export function Navbar() {
             ))}
           </ul>
 
-          <a
-            href="#contact"
-            className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90 transition-opacity"
-          >
-            Start a project
-            <span aria-hidden>→</span>
-          </a>
+          <div className="hidden md:flex items-center gap-2">
+            <ThemeToggle />
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90 transition-opacity"
+            >
+              Start a project
+              <span aria-hidden>→</span>
+            </a>
+          </div>
 
-          <button
-            onClick={() => setOpen((v) => !v)}
-            className="md:hidden h-9 w-9 rounded-full glass shadow-soft flex items-center justify-center"
-            aria-label="Toggle menu"
-          >
-            <span className="block w-4 space-y-1">
-              <span className="block h-px bg-foreground" />
-              <span className="block h-px bg-foreground" />
-              <span className="block h-px bg-foreground" />
-            </span>
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setOpen((v) => !v)}
+              className="h-9 w-9 rounded-full glass shadow-soft flex items-center justify-center"
+              aria-label="Toggle menu"
+            >
+              <span className="block w-4 space-y-1">
+                <span className="block h-px bg-foreground" />
+                <span className="block h-px bg-foreground" />
+                <span className="block h-px bg-foreground" />
+              </span>
+            </button>
+          </div>
         </nav>
 
         {open && (
