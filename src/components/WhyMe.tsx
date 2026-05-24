@@ -6,7 +6,11 @@ const items = [
   { icon: GitBranch, title: "Git repo included", desc: "Your code is yours forever — clean and portable." },
   { icon: Sparkles, title: "Lovable integration", desc: "Easily extend your site later with AI tools." },
   { icon: Smartphone, title: "Mobile responsive", desc: "Looks lovely on every screen, every time." },
-  { icon: BookOpen, title: "Future edit tutorials", desc: "Short videos so you can update it yourself." },
+  {
+    icon: BookOpen,
+    title: "Personalized live walkthrough",
+    desc: "Once your site is complete, I'll guide you live on how to edit and manage it through your own Lovable account — easy updates, full ownership, and zero coding needed.",
+  },
   { icon: Zap, title: "Fast turnaround", desc: "Most sites are live in under a week." },
 ];
 
