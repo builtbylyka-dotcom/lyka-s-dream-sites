@@ -4,7 +4,7 @@ const steps = [
   { n: "01", title: "Send your idea", desc: "Tell me about your project — vibe, goal, references. No idea is too small." },
   { n: "02", title: "Pay 50% downpayment", desc: "Lock in your slot and I'll start designing within 24 hours." },
   { n: "03", title: "Website gets built", desc: "I share progress with you and refine until it feels right." },
-  { n: "04", title: "Final payment + turnover", desc: "Pay the remaining 50%, get your files, repo, and tutorial videos." },
+  { n: "04", title: "Final payment + turnover", desc: "Pay the remaining 50%, then get your site integrated into your own Lovable account with a personalized live walkthrough." },
 ];
 
 export function Process() {
