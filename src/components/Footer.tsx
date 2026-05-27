@@ -1,7 +1,7 @@
 import chibi from "@/assets/lyka-logo.png";
 import { Facebook, Mail, MessageCircle } from "lucide-react";
 
-const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61590488216046";
+const FACEBOOK_URL = "https://www.facebook.com/share/18idyCPtn5/?mibextid=wwXIfr";
 
 export function Footer() {
   return (

@@ -9,7 +9,7 @@ const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID as string | u
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID as string | undefined;
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY as string | undefined;
 
-const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61590488216046";
+const FACEBOOK_URL = "https://www.facebook.com/share/18idyCPtn5/?mibextid=wwXIfr";
 
 const channels = [
   {

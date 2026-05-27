@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Facebook, X } from "lucide-react";
 
-const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61590488216046";
+const FACEBOOK_URL = "https://www.facebook.com/share/18idyCPtn5/?mibextid=wwXIfr";
 
 export function FloatingMessenger() {
   const [open, setOpen] = useState(false);
