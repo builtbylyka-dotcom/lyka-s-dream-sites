@@ -124,7 +124,7 @@ export function Contact() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
-                className="group glass shadow-card rounded-3xl p-5 flex items-center gap-4 hover:shadow-glow hover:-translate-y-0.5 transition-all"
+                className="group glass shadow-card rounded-3xl p-5 flex items-center gap-4 hover:shadow-glow hover:-translate-y-0.5 transition-[box-shadow,transform]"
               >
                 <div className="h-12 w-12 rounded-2xl bg-rose-gradient text-white flex items-center justify-center shadow-soft group-hover:scale-110 transition-transform">
                   <c.icon className="h-5 w-5" />
@@ -134,7 +134,7 @@ export function Contact() {
                   <p className="font-medium truncate">{c.value}</p>
                   <p className="text-xs text-muted-foreground">{c.hint}</p>
                 </div>
-                <span className="text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all">
+                <span className="text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-[color,transform]">
                   →
                 </span>
               </motion.a>
@@ -151,9 +151,6 @@ export function Contact() {
             noValidate
             className="glass shadow-glow rounded-[2rem] p-7 md:p-9 border border-primary/15"
           >
-
-
-
             <h3 className="font-display text-2xl">Send an inquiry</h3>
             <p className="mt-1 text-sm text-muted-foreground">
               Tell me a little about your project. I usually reply within 24h.
