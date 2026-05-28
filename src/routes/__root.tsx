@@ -89,11 +89,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      {
-        rel: "icon",
-        href: lykaLogo,
-        type: "image/png",
-      },
     ],
   }),
   shellComponent: RootShell,
@@ -106,6 +101,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href={lykaLogo} type="image/png" />
         <HeadContent />
       </head>
       <body>
