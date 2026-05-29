@@ -1,16 +1,16 @@
-import { readdirSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 
-const assetsDir = "dist/client/assets";
-const files = readdirSync(assetsDir);
+const manifest = JSON.parse(readFileSync("dist/client/.vite/manifest.json", "utf-8"));
 
-const jsFiles = files.filter((f) => f.startsWith("index-") && f.endsWith(".js"));
-const cssFiles = files.filter((f) => f.endsWith(".css"));
+const entries = Object.values(manifest).filter((chunk) => chunk.isEntry);
+const cssFiles = [...new Set(Object.values(manifest).flatMap((chunk) => chunk.css ?? []))];
+const jsFiles = entries.map((chunk) => chunk.file);
 
 const cssLinks = cssFiles
-  .map((f) => `  <link rel="stylesheet" href="/assets/${f}" />`)
+  .map((f) => `  <link rel="stylesheet" href="/${f}" />`)
   .join("\n");
 const jsScripts = jsFiles
-  .map((f) => `  <script type="module" src="/assets/${f}"></script>`)
+  .map((f) => `  <script type="module" src="/${f}"></script>`)
   .join("\n");
 
 const html = `<!DOCTYPE html>
@@ -30,4 +30,4 @@ ${jsScripts}
 </html>`;
 
 writeFileSync("dist/client/index.html", html);
-console.log("✓ Generated dist/client/index.html");
+console.log(`✓ Generated dist/client/index.html (${jsFiles.length} entry, ${cssFiles.length} css)`);
