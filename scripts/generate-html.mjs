@@ -1,17 +1,9 @@
-import { readFileSync, writeFileSync } from "fs";
+import { readdirSync, writeFileSync } from "fs";
 
-const manifest = JSON.parse(readFileSync("dist/client/.vite/manifest.json", "utf-8"));
+const assets = readdirSync("dist/client/standalone/assets");
 
-const entries = Object.values(manifest).filter((chunk) => chunk.isEntry);
-const cssFiles = [...new Set(Object.values(manifest).flatMap((chunk) => chunk.css ?? []))];
-const jsFiles = entries.map((chunk) => chunk.file);
-
-const cssLinks = cssFiles
-  .map((f) => `  <link rel="stylesheet" href="/${f}" />`)
-  .join("\n");
-const jsScripts = jsFiles
-  .map((f) => `  <script type="module" src="/${f}"></script>`)
-  .join("\n");
+const jsFile = assets.find((f) => f.endsWith(".js") && !f.includes("chunk"));
+const cssFile = assets.find((f) => f.endsWith(".css"));
 
 const html = `<!DOCTYPE html>
 <html lang="en">
@@ -21,13 +13,18 @@ const html = `<!DOCTYPE html>
   <meta name="author" content="Built by Lyka" />
   <title>Built by Lyka — Websites & portfolios made simple</title>
   <meta name="description" content="Affordable, beginner-friendly website creation for creators, freelancers, and small businesses. Starting at ₱1,000." />
+  <meta property="og:title" content="Built by Lyka — Websites & portfolios made simple" />
+  <meta property="og:description" content="Soft, modern websites built around you. Portfolios, landing pages, and business sites starting at ₱1,000." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="/MyFavicon.png" type="image/png" />
-${cssLinks}
+  ${cssFile ? `<link rel="stylesheet" href="/standalone/assets/${cssFile}" />` : ""}
 </head>
 <body>
-${jsScripts}
+  <div id="root"></div>
+  ${jsFile ? `<script type="module" src="/standalone/assets/${jsFile}"></script>` : ""}
 </body>
 </html>`;
 
 writeFileSync("dist/client/index.html", html);
-console.log(`✓ Generated dist/client/index.html (${jsFiles.length} entry, ${cssFiles.length} css)`);
+console.log(`✓ Generated dist/client/index.html (js: ${jsFile}, css: ${cssFile})`);
