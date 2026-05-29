@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client";
+import "./styles.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { Toaster } from "./components/ui/sonner";
 import { Navbar } from "./components/Navbar";
